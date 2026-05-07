@@ -1,0 +1,189 @@
+.arch {
+  padding: var(--space-section) 0;
+  background: var(--color-canvas);
+}
+
+.section-label {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--color-accent-indigo);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  color: var(--color-ink);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.section-desc {
+  font-size: 17px;
+  color: var(--color-muted);
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.arch__header {
+  text-align: center;
+  margin-bottom: 64px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: all 0.6s var(--ease-out);
+}
+.arch__header.visible { opacity: 1; transform: translateY(0); }
+.arch__header .section-desc { margin: 0 auto; }
+
+.arch__diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: all 0.7s var(--ease-out) 0.2s;
+}
+.arch__diagram.visible { opacity: 1; transform: translateY(0); }
+
+.arch__node--gateway {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 32px;
+  background: var(--color-surface-dark);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(99,102,241,0.2);
+  box-shadow: var(--shadow-glow-indigo);
+}
+
+.arch__node-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99,102,241,0.15);
+  border-radius: var(--radius-lg);
+  color: #818cf8;
+}
+
+.arch__node-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.arch__node-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.arch__node-tech {
+  font-size: 13px;
+  font-weight: 500;
+  color: #818cf8;
+  font-family: var(--font-mono);
+}
+
+.arch__node-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.arch__connectors {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  height: 48px;
+  align-items: stretch;
+}
+
+.arch__line {
+  width: 2px;
+  background: linear-gradient(180deg, rgba(99,102,241,0.4), rgba(99,102,241,0.1));
+  border-radius: 1px;
+}
+
+.arch__line--data {
+  background: linear-gradient(180deg, rgba(99,102,241,0.15), rgba(99,102,241,0.05));
+}
+
+.arch__connectors--down { height: 40px; }
+
+.arch__services {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 960px;
+}
+
+.arch__service {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px 20px;
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-surface-strong);
+  border-radius: var(--radius-xl);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.arch__service:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent);
+}
+
+.arch__service-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 0 0 2px 2px;
+}
+
+.arch__service-icon { font-size: 28px; margin-bottom: 10px; }
+.arch__service-name { font-size: 16px; font-weight: 700; color: var(--color-ink); letter-spacing: -0.3px; }
+.arch__service-tech { font-size: 12px; font-family: var(--font-mono); color: var(--color-muted); margin-top: 2px; }
+.arch__service-desc { font-size: 12px; color: var(--color-muted-soft); margin-top: 8px; line-height: 1.4; }
+
+.arch__data-layer {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+}
+
+.arch__data-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 32px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-surface-strong);
+  border-radius: var(--radius-lg);
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.arch__data-node:hover { transform: translateY(-2px); }
+.arch__data-icon { font-size: 24px; margin-bottom: 6px; }
+.arch__data-name { font-size: 15px; font-weight: 700; color: var(--color-ink); }
+.arch__data-detail { font-size: 12px; color: var(--color-muted); margin-top: 4px; font-family: var(--font-mono); }
+
+@media (max-width: 768px) {
+  .arch__services { grid-template-columns: repeat(2, 1fr); }
+  .arch__connectors { gap: 30px; }
+  .arch__data-layer { flex-direction: column; align-items: center; }
+}

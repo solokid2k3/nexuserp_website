@@ -1,0 +1,122 @@
+.api {
+  padding: var(--space-section) 0;
+  background: var(--color-surface-soft);
+}
+
+.api__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.api__left, .api__right {
+  opacity: 0;
+  transition: all 0.7s var(--ease-out);
+}
+.api__left { transform: translateX(-24px); }
+.api__right { transform: translateX(24px); transition-delay: 0.15s; }
+.api__left.visible { opacity: 1; transform: translateX(0); }
+.api__right.visible { opacity: 1; transform: translateX(0); }
+
+.api__left .section-desc { margin-bottom: 32px; }
+
+.api__code-block {
+  background: var(--color-surface-dark);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.api__code-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: #161622;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.api__code-lang {
+  font-size: 11px;
+  font-weight: 600;
+  color: #818cf8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.api__code-title {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.api__code {
+  padding: 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: #e2e8f0;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.api__endpoints {
+  background: var(--color-canvas);
+  border: 1px solid var(--color-surface-strong);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+}
+
+.api__endpoints-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin-bottom: 20px;
+  letter-spacing: -0.3px;
+}
+
+.api__endpoint {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-surface-soft);
+  animation: fadeInUp 0.4s var(--ease-out) both;
+}
+
+.api__endpoint:last-of-type { border-bottom: none; }
+
+.api__method {
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.api__path {
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.api__endpoint-desc {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+.api__endpoints-footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-surface-strong);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .api__layout { grid-template-columns: 1fr; gap: 32px; }
+}
