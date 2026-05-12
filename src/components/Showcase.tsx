@@ -19,8 +19,8 @@ export default function Showcase() {
   const [lightbox, setLightbox] = useState(false);
   const [progress, setProgress] = useState(0);
   const { ref, isVisible } = useInView();
-  const intervalRef = useRef<ReturnType<typeof setInterval>>();
-  const progressRef = useRef<ReturnType<typeof setInterval>>();
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const goTo = useCallback((index: number) => {
     setSelected(index);
@@ -46,8 +46,8 @@ export default function Showcase() {
     }, 50);
 
     return () => {
-      clearInterval(intervalRef.current);
-      clearInterval(progressRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (progressRef.current) clearInterval(progressRef.current);
     };
   }, [isPaused, lightbox, selected, goNext]);
 
