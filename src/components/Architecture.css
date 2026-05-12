@@ -3,32 +3,6 @@
   background: var(--color-canvas);
 }
 
-.section-label {
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--color-accent-indigo);
-  margin-bottom: 12px;
-}
-
-.section-title {
-  font-size: clamp(28px, 4vw, 44px);
-  font-weight: 800;
-  color: var(--color-ink);
-  letter-spacing: -1.5px;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-
-.section-desc {
-  font-size: 17px;
-  color: var(--color-muted);
-  max-width: 600px;
-  line-height: 1.6;
-}
-
 .arch__header {
   text-align: center;
   margin-bottom: 64px;
@@ -50,6 +24,56 @@
 }
 .arch__diagram.visible { opacity: 1; transform: translateY(0); }
 
+/* Client layer */
+.arch__clients {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.arch__client-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-surface-strong);
+  border-radius: var(--radius-pill);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.arch__client-badge:hover {
+  border-color: var(--color-accent-indigo);
+  color: var(--color-ink);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Protocol labels */
+.arch__protocol-label {
+  padding: 4px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--color-muted-soft);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-surface-strong);
+  border-radius: var(--radius-pill);
+  margin: 4px 0;
+}
+
+.arch__protocol-label--grpc {
+  color: #818cf8;
+  background: rgba(99,102,241,0.06);
+  border-color: rgba(99,102,241,0.15);
+}
+
+/* Gateway */
 .arch__node--gateway {
   display: flex;
   align-items: center;
@@ -59,6 +83,27 @@
   border-radius: var(--radius-xl);
   border: 1px solid rgba(99,102,241,0.2);
   box-shadow: var(--shadow-glow-indigo);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.arch__node--gateway:hover {
+  box-shadow: var(--shadow-glow-strong);
+  border-color: rgba(99,102,241,0.4);
+}
+
+.arch__node--dimmed {
+  opacity: 0.6;
+}
+
+.arch__node-pulse {
+  position: absolute;
+  inset: -2px;
+  border: 2px solid rgba(99,102,241,0.3);
+  border-radius: var(--radius-xl);
+  animation: borderGlow 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .arch__node-icon {
@@ -97,6 +142,7 @@
   margin-top: 2px;
 }
 
+/* Connectors */
 .arch__connectors {
   display: flex;
   justify-content: center;
@@ -109,7 +155,24 @@
   width: 2px;
   background: linear-gradient(180deg, rgba(99,102,241,0.4), rgba(99,102,241,0.1));
   border-radius: 1px;
+  position: relative;
 }
+
+.arch__line--animated::after {
+  content: '';
+  position: absolute;
+  left: -1px;
+  width: 4px;
+  height: 12px;
+  background: rgba(99,102,241,0.6);
+  border-radius: 2px;
+  animation: flowDown 2s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(99,102,241,0.4);
+}
+
+.arch__line--animated:nth-child(2)::after { animation-delay: 0.3s; }
+.arch__line--animated:nth-child(3)::after { animation-delay: 0.6s; }
+.arch__line--animated:nth-child(4)::after { animation-delay: 0.9s; }
 
 .arch__line--data {
   background: linear-gradient(180deg, rgba(99,102,241,0.15), rgba(99,102,241,0.05));
@@ -117,6 +180,7 @@
 
 .arch__connectors--down { height: 40px; }
 
+/* Services Grid */
 .arch__services {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -139,10 +203,16 @@
   transition: all var(--duration-normal) var(--ease-out);
 }
 
-.arch__service:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+.arch__service:hover,
+.arch__service--highlighted {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
   border-color: var(--accent);
+}
+
+.arch__service--dimmed {
+  opacity: 0.4;
+  transform: scale(0.98);
 }
 
 .arch__service-bar {
@@ -153,13 +223,34 @@
   height: 3px;
   background: var(--accent);
   border-radius: 0 0 2px 2px;
+  transition: height var(--duration-fast);
 }
+
+.arch__service:hover .arch__service-bar { height: 4px; }
 
 .arch__service-icon { font-size: 28px; margin-bottom: 10px; }
 .arch__service-name { font-size: 16px; font-weight: 700; color: var(--color-ink); letter-spacing: -0.3px; }
 .arch__service-tech { font-size: 12px; font-family: var(--font-mono); color: var(--color-muted); margin-top: 2px; }
 .arch__service-desc { font-size: 12px; color: var(--color-muted-soft); margin-top: 8px; line-height: 1.4; }
 
+.arch__service-protocol {
+  margin-top: 12px;
+}
+
+.arch__service-protocol-badge {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  padding: 2px 10px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 15%, transparent);
+  border-radius: var(--radius-pill);
+}
+
+/* Data layer */
 .arch__data-layer {
   display: flex;
   gap: 24px;
@@ -174,10 +265,31 @@
   background: var(--color-surface-card);
   border: 1px solid var(--color-surface-strong);
   border-radius: var(--radius-lg);
-  transition: transform var(--duration-normal) var(--ease-out);
+  transition: all var(--duration-normal) var(--ease-out);
+  position: relative;
+  overflow: hidden;
 }
 
-.arch__data-node:hover { transform: translateY(-2px); }
+.arch__data-node:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.arch__data-glow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: var(--gradient-accent);
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+  box-shadow: 0 0 20px rgba(99,102,241,0.3);
+}
+
+.arch__data-node:hover .arch__data-glow { opacity: 1; }
+
 .arch__data-icon { font-size: 24px; margin-bottom: 6px; }
 .arch__data-name { font-size: 15px; font-weight: 700; color: var(--color-ink); }
 .arch__data-detail { font-size: 12px; color: var(--color-muted); margin-top: 4px; font-family: var(--font-mono); }
@@ -186,4 +298,5 @@
   .arch__services { grid-template-columns: repeat(2, 1fr); }
   .arch__connectors { gap: 30px; }
   .arch__data-layer { flex-direction: column; align-items: center; }
+  .arch__clients { flex-wrap: wrap; justify-content: center; }
 }

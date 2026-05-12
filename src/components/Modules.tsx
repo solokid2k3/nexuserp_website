@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useInView } from '../hooks/useInView';
 import './Modules.css';
 
@@ -9,6 +9,11 @@ const modules = [
     icon: '📦',
     color: '#10b981',
     tech: 'Go · gRPC · PostgreSQL · Redis',
+    proto: `service InventoryService {
+  rpc ListProducts (ListProductsReq) returns (ListProductsResp);
+  rpc AdjustStock (AdjustStockReq) returns (StockResp);
+  rpc TransferStock (TransferReq) returns (TransferResp);
+}`,
     features: [
       { title: 'Product Management', desc: 'CRUD with categories, attributes, and dynamic pricing' },
       { title: 'Stock Control', desc: 'Atomic adjustments with PostgreSQL row-level locking' },
@@ -24,6 +29,11 @@ const modules = [
     icon: '🛒',
     color: '#3b82f6',
     tech: 'Go · gRPC · PostgreSQL · Redis',
+    proto: `service OrderService {
+  rpc CreateSalesOrder (CreateSOReq) returns (SalesOrderResp);
+  rpc GetCustomer (CustomerReq) returns (CustomerResp);
+  rpc ListOrders (ListOrdersReq) returns (ListOrdersResp);
+}`,
     features: [
       { title: 'Customer Tiers', desc: 'BRONZE → SILVER → GOLD → PLATINUM with credit limits' },
       { title: 'Sales Order Lifecycle', desc: 'DRAFT → APPROVED → PROCESSING → SHIPPED → DELIVERED' },
@@ -39,6 +49,11 @@ const modules = [
     icon: '💰',
     color: '#f59e0b',
     tech: 'Java / Spring Boot · gRPC · JPA',
+    proto: `service FinanceService {
+  rpc CreateJournalEntry (JournalReq) returns (JournalResp);
+  rpc GetTrialBalance (TrialBalanceReq) returns (Report);
+  rpc GetProfitLoss (PeriodReq) returns (Report);
+}`,
     features: [
       { title: 'Double-Entry Bookkeeping', desc: 'Enforces debits = credits rule on all journal entries' },
       { title: 'Chart of Accounts', desc: 'ASSET / LIABILITY / EQUITY / REVENUE / EXPENSE hierarchy' },
@@ -54,6 +69,11 @@ const modules = [
     icon: '👥',
     color: '#ec4899',
     tech: 'Java / Spring Boot · gRPC · JPA',
+    proto: `service HRService {
+  rpc CreateEmployee (EmployeeReq) returns (EmployeeResp);
+  rpc ProcessPayroll (PayrollReq) returns (PayrollResp);
+  rpc ClockIn (AttendanceReq) returns (AttendanceResp);
+}`,
     features: [
       { title: 'Employee Lifecycle', desc: 'Hire → Active → Terminate with auto-numbering' },
       { title: 'Leave Management', desc: 'Request → Approve/Reject with weekend exclusion' },
@@ -67,8 +87,27 @@ const modules = [
 
 export default function Modules() {
   const [active, setActive] = useState('inventory');
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showProto, setShowProto] = useState(false);
   const { ref, isVisible } = useInView();
   const current = modules.find(m => m.id === active)!;
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const handleTabChange = (id: string) => {
+    if (id === active) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActive(id);
+      setShowProto(false);
+      setIsTransitioning(false);
+    }, 200);
+  };
+
+  useEffect(() => {
+    if (panelRef.current) {
+      panelRef.current.scrollTop = 0;
+    }
+  }, [active]);
 
   return (
     <section className="modules" id="modules" ref={ref}>
@@ -84,7 +123,7 @@ export default function Modules() {
             <button
               key={m.id}
               className={`modules__tab ${active === m.id ? 'modules__tab--active' : ''}`}
-              onClick={() => setActive(m.id)}
+              onClick={() => handleTabChange(m.id)}
               style={{ '--tab-color': m.color } as React.CSSProperties}
             >
               <span className="modules__tab-icon">{m.icon}</span>
@@ -93,12 +132,39 @@ export default function Modules() {
           ))}
         </div>
 
-        <div className={`modules__panel ${isVisible ? 'visible' : ''}`} key={current.id} style={{ '--module-color': current.color } as React.CSSProperties}>
+        <div
+          className={`modules__panel ${isVisible ? 'visible' : ''} ${isTransitioning ? 'modules__panel--transitioning' : ''}`}
+          ref={panelRef}
+          style={{ '--module-color': current.color } as React.CSSProperties}
+        >
           <div className="modules__panel-header">
             <span className="modules__panel-icon">{current.icon}</span>
-            <div>
+            <div className="modules__panel-info">
               <h3 className="modules__panel-name">{current.name} Service</h3>
               <span className="modules__panel-tech">{current.tech}</span>
+            </div>
+            <button
+              className={`modules__proto-toggle ${showProto ? 'modules__proto-toggle--active' : ''}`}
+              onClick={() => setShowProto(!showProto)}
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 7 8 3 12 7"/><polyline points="4 13 8 9 12 13"/></svg>
+              Proto
+            </button>
+          </div>
+
+          {/* Proto preview */}
+          <div className={`modules__proto ${showProto ? 'modules__proto--visible' : ''}`}>
+            <div className="modules__proto-header">
+              <span className="modules__proto-lang">protobuf</span>
+              <span className="modules__proto-file">{current.id}_service.proto</span>
+            </div>
+            <pre className="modules__proto-code"><code>{current.proto}</code></pre>
+          </div>
+
+          <div className="modules__features-header">
+            <span className="modules__features-count">{current.features.length} Features</span>
+            <div className="modules__features-bar">
+              <div className="modules__features-fill" style={{ width: `${(current.features.length / 6) * 100}%` }} />
             </div>
           </div>
 

@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useInView } from '../hooks/useInView';
 import './TechStack.css';
 
@@ -16,6 +17,42 @@ const techs = [
   { name: 'React + TypeScript', category: 'Frontend', icon: '⚛️', desc: 'Web client with type-safe component architecture', color: '#61DAFB' },
 ];
 
+function TechCard({ t, index, isVisible }: { t: typeof techs[0]; index: number; isVisible: boolean }) {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -8;
+    const rotateY = ((x - centerX) / centerX) * 8;
+    card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+  }, []);
+
+  const handleMouseLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.style.transform = '';
+  }, []);
+
+  return (
+    <div
+      className={`tech__card animate-on-scroll ${isVisible ? 'visible' : ''}`}
+      style={{ '--card-color': t.color, transitionDelay: `${index * 60}ms` } as React.CSSProperties}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="tech__card-glow" />
+      <div className="tech__card-top">
+        <span className="tech__card-icon">{t.icon}</span>
+        <span className="tech__card-cat">{t.category}</span>
+      </div>
+      <h3 className="tech__card-name">{t.name}</h3>
+      <p className="tech__card-desc">{t.desc}</p>
+      <div className="tech__card-accent" />
+    </div>
+  );
+}
+
 export default function TechStack() {
   const { ref, isVisible } = useInView();
 
@@ -30,15 +67,7 @@ export default function TechStack() {
 
         <div className="tech__grid stagger-children">
           {techs.map((t, i) => (
-            <div key={t.name} className={`tech__card animate-on-scroll ${isVisible ? 'visible' : ''}`} style={{ '--card-color': t.color, transitionDelay: `${i * 60}ms` } as React.CSSProperties}>
-              <div className="tech__card-top">
-                <span className="tech__card-icon">{t.icon}</span>
-                <span className="tech__card-cat">{t.category}</span>
-              </div>
-              <h3 className="tech__card-name">{t.name}</h3>
-              <p className="tech__card-desc">{t.desc}</p>
-              <div className="tech__card-accent" />
-            </div>
+            <TechCard key={t.name} t={t} index={i} isVisible={isVisible} />
           ))}
         </div>
       </div>
